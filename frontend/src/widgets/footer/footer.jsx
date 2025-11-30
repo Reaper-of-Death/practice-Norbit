@@ -1,7 +1,9 @@
 export const Footer = () => {
     return(
         <div className='Footer'>
-            Политика и конфидециальность
+            <div className="FooterContent">
+                Политика и конфидециальность
+            </div>            
         </div>
     )
 }
