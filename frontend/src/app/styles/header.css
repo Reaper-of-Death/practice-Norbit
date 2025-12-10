@@ -1,0 +1,80 @@
+.Header {
+    background-color: rgba(249, 247, 244, 0.95);
+    padding: 16px 20px;
+    border-bottom: 2px solid #DCDCDC;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.sort-dropdown {
+    display: flex;
+    align-items: center;
+}
+
+.sort-select {
+    padding: 8px 12px;
+    border: 1px solid #DCDCDC;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 14px;
+}
+
+.price-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.price-input {
+    width: 80px;
+    padding: 6px 8px;
+    border: 1px solid #DCDCDC;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    padding: 8px 12px;
+    border: 1px solid #DCDCDC;
+    border-radius: 4px;
+    width: 200px;
+    font-size: 14px;
+}
+
+.cart-button {
+    padding: 8px 16px;
+    background-color: #2F2F2F;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.cart-button:hover {
+    background-color: #1a1a1a;
+}

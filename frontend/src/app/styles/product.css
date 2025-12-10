@@ -1,0 +1,196 @@
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.cardProduct {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  height: 100%;
+}
+
+.cardProduct:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.cardSpaceImage {
+  position: relative;
+  height: 180px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f8f8;
+}
+
+.cardImage {
+  max-width: 90%;
+  max-height: 90%;
+  width: auto;
+  height: 160px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.cardProduct:hover .cardImage {
+  transform: scale(1.05);
+}
+
+/* Стили для компонента Price */
+.cardDescrtipton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.cardName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2F2F2F;
+  line-height: 1.3;
+  margin: 0;
+  min-height: 2.6em;
+}
+
+/* Контейнер для цен */
+.cardDescrtipton > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Цена со скидкой */
+.discountPriceProduct {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2F2F2F;
+  margin: 0;
+}
+
+/* Обычная цена (зачеркнутая, только когда есть скидка) */
+.hasDiscount .priceProduct {
+  font-size: 14px;
+  color: #888;
+  text-decoration: line-through;
+  margin: 0;
+}
+
+/* Базовая цена (без зачеркивания) */
+.priceProduct {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2F2F2F;
+  text-decoration: none;
+  margin: 0;
+}
+
+.discountPriceProduct::after,
+.priceProduct::after {
+  content: " ₽";
+  font-weight: normal;
+}
+
+/* Адаптивность для цен */
+@media (max-width: 768px) {
+  .discountPriceProduct {
+    font-size: 16px;
+  }
+  
+  .priceProduct {
+    font-size: 13px;
+  }
+  
+  .cardDescrtipton > div:only-child .priceProduct {
+    font-size: 16px;
+  }
+}
+
+/* Адаптивность для разных экранов */
+@media (max-width: 1200px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    padding: 12px;
+  }
+  
+  .cardSpaceImage {
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 10px;
+  }
+  
+  .cardSpaceImage {
+    height: 120px;
+  }
+  
+  .cardProduct {
+    padding: 12px;
+  }
+
+.product-count {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #666;
+  font-weight: 500;
+}
+
+.no-products {
+  font-size: 18px;
+  color: #2F2F2F;
+  padding: 40px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  margin-top: 20px;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .product-count {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+  
+  .no-products {
+    font-size: 16px;
+    padding: 30px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .no-products {
+    font-size: 14px;
+    padding: 20px 15px;
+  }
+}
+}

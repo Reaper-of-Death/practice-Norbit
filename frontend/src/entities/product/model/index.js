@@ -1,4 +1,4 @@
-export const CreatProduct = (id, name, price, discountPrice, image) => ({
+export const CreateProduct = (id, name, price, discountPrice, image) => ({
 	id,
 	name,
 	price,

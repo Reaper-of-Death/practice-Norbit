@@ -1,0 +1,8 @@
+.HomePageContent {
+  flex: 1;
+}
+
+.HomePage {
+  display: flex;
+  flex-direction: column;
+}
