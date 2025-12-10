@@ -105,7 +105,7 @@ html, body {
 }
 
 .FooterContent {
-  padding-left: 5vh;
+  padding-left: 3vh;
 }
 
 .HomePageContent {
@@ -203,23 +203,23 @@ html, body {
   margin: 0;
 }
 
-/* Обычная цена (зачеркнутая) */
-.priceProduct {
+/* Обычная цена (зачеркнутая, только когда есть скидка) */
+.hasDiscount .priceProduct {
   font-size: 14px;
   color: #888;
   text-decoration: line-through;
   margin: 0;
 }
 
-/* Если нет скидки - обычная цена без зачеркивания */
-.cardDescrtipton > div:only-child .priceProduct {
-  text-decoration: none;
+/* Базовая цена (без зачеркивания) */
+.priceProduct {
   font-size: 18px;
   font-weight: 600;
   color: #2F2F2F;
+  text-decoration: none;
+  margin: 0;
 }
 
-/* Валюта (если нужно добавить) */
 .discountPriceProduct::after,
 .priceProduct::after {
   content: " ₽";
