@@ -1,4 +1,4 @@
-import { useFilters } from "@/shared/filterContext/filterContext";
+import { useFilters } from "@features/sortingProducts/filterContext/filterContext";
 import { useNavigate } from "react-router-dom";
 import Logo from "@/shared/image/Logo.png"
 

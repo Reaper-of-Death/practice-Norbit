@@ -1,4 +1,5 @@
 import { HeaderCart, Footer } from "@widgets/";
+import { Cart } from "../../widgets/cart/cart";
 
 export const CartPage = () => {
     return(
@@ -6,7 +7,7 @@ export const CartPage = () => {
             <HeaderCart/>
 
             <div className="CartPageContent">
-                Content
+                <Cart/>
             </div>
 
             <Footer/>

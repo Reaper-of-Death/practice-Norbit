@@ -1,7 +1,7 @@
 import { CreateProduct } from "@entities";
 import { Card } from "@widgets/product/cart";
-import { useFilters } from "../filterContext/filterContext";
-import { sortingProducts } from "@/features/sortingProducts/sortingProducts";
+import { useFilters } from "@features/sortingProducts/filterContext/filterContext";
+import { sortingProducts } from "@features/sortingProducts/sortingProducts";
 
 export const ProductList = () => {
     const { filters } = useFilters();

@@ -5,3 +5,8 @@ export const CreateProduct = (id, name, price, discountPrice, image) => ({
 	discountPrice,
 	image,
 });
+
+export const CreateCartItem = (product, quantity = 1) => ({
+  ...product,
+  quantity,
+});
