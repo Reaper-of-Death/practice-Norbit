@@ -3,6 +3,7 @@
 @import url('./homePage.css');
 @import url('./product.css');
 @import url('./cartPage.css');
+@import url('./descriptionPage.css');
 
 #root {
   background-color: #F9F7F4;

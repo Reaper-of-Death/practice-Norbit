@@ -1,0 +1,61 @@
+.card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    cursor: pointer;
+}
+
+.card-link:hover .cardProduct {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Стили для страницы описания */
+.product-detail {
+    display: flex;
+    gap: 40px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.product-detail__image img {
+    max-width: 500px;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.product-detail__info {
+    flex: 1;
+}
+
+.product-detail__price {
+    font-size: 24px;
+    margin: 20px 0;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: #999;
+    margin-right: 15px;
+}
+
+.current-price {
+    color: #ff6b6b;
+    font-weight: bold;
+}
+
+.product-detail__description,
+.product-detail__characteristics {
+    margin-top: 30px;
+}
+
+.product-detail__characteristics ul {
+    list-style: none;
+    padding: 0;
+}
+
+.product-detail__characteristics li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
