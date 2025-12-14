@@ -1,7 +1,6 @@
-import { Header } from '@widgets/'
-import { Footer } from '@widgets/'
+import { Header, Footer } from '@widgets/'
 import { ProductList } from '@shared/products'
-import { FilterProvider } from '@/shared/filterContext/filterProvader'
+import { FilterProvider } from '@shared/filterContext/filterProvader'
 
 export const HomePage = () => {
   return (

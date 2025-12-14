@@ -9,6 +9,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    min-height: 8vh;
 }
 
 .header-left {
@@ -43,6 +44,38 @@
     border: 1px solid #DCDCDC;
     border-radius: 4px;
     font-size: 14px;
+}
+
+.header-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: fit-content;
+}
+
+/* Стили для кнопки-логотипа */
+.logo-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.logo-button:hover {
+    opacity: 0.8;
+}
+
+.logo-image {
+    height: 50px;
+    width: auto;
+    max-width: 200px;
+    object-fit: contain;
 }
 
 .header-right {

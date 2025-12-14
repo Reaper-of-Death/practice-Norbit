@@ -1,7 +1,10 @@
 import { useFilters } from "@/shared/filterContext/filterContext";
+import { useNavigate } from "react-router-dom";
+import Logo from "@/shared/image/Logo.png"
 
 export const Header = () => {
     const { filters, updateFilters } = useFilters();
+    const navigate = useNavigate();
 
     const handleSortChange = (e) => {
         updateFilters({ sortBy: e.target.value });
@@ -20,8 +23,11 @@ export const Header = () => {
     };
 
     const handleCartClick = () => {
-        // Логика для корзины
-        console.log('Корзина открыта');
+        navigate("/cart")
+    };
+
+    const handleLogoClick = () => {
+        navigate("/");
     };
 
     return (
@@ -62,6 +68,21 @@ export const Header = () => {
                     />
                     <span> ₽</span>
                 </div>
+            </div>
+
+            {/* Центральная часть */}
+            <div className="header-center">
+                <button 
+                    className="logo-button" 
+                    onClick={handleLogoClick}
+                    aria-label="Перейти на главную страницу"
+                >
+                    <img 
+                        src={Logo} 
+                        alt="Логотип сайта" 
+                        className="logo-image"
+                    />
+                </button>
             </div>
 
             {/* Правая часть */}
