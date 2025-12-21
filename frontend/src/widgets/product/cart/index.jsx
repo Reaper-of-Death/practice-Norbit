@@ -8,7 +8,10 @@ export const Card = ({ product }) => {
   	const [isLoading, setIsLoading] = useState(false);
 	const { addToCart } = useCart();
 
-	const handleProductToCartClick = async () => {
+	const handleProductToCartClick = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     setIsLoading(true);
     
     try {      
@@ -30,7 +33,7 @@ export const Card = ({ product }) => {
 		<Link to={`/description/${product.id}`} className="card-link">
 			<div className='cardProduct'>
 				<div className='cardSpaceImage'>
-					<Image url={product.image.url} alt={product.image.alt} className="cardImage"/>
+					<Image url={product.image} className="cardImage"/>
 				</div>
 
 				<div className="cardDescrtipton">

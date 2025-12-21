@@ -1,10 +1,11 @@
-export const CreateProduct = (id, name, description, price, discountPrice, image) => ({
+export const CreateProduct = (id, name, description, material, price, discountPrice, image) => ({
 	id,
 	name,
 	description,
+	material,
 	price,
 	discountPrice,
-	image,	
+	image,
 });
 
 export const CreateCartItem = (product, quantity = 1) => ({

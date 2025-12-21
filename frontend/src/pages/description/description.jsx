@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { products } from '@shared/products/products';
 import { useCart } from '@features/addToCart/cartContext/cartContext'
+import { Image } from '../../entities/product/ui/image';
 
 export const DescriptionPage = () => {
     const { id } = useParams();
@@ -54,8 +55,8 @@ export const DescriptionPage = () => {
             <HeaderDescription/>
             
             <div className="product-detail">
-                <div className="product-detail__image">
-                    <img src={product.image.url} alt={product.image.alt} />
+                <div className="product-detail__image">                    
+                    <Image url={product.image}/>
                 </div>
                 
                 <div className="product-detail__info">
@@ -98,11 +99,7 @@ export const DescriptionPage = () => {
                     
                     <div className="product-detail__characteristics">
                         <h2>Характеристики</h2>
-                        <ul>                            
-                            <li>Материал: Экокожа</li>
-                            <li>Размер: 90x100x85 см</li>
-                            <li>Цвет: Черный</li>                            
-                        </ul>
+                        <p>{product.material}</p>
                     </div>
                 </div>
             </div>

@@ -50,7 +50,7 @@ export const sortingProducts = (products = [], filters = {}) => {
             return filteredProducts.sort((a, b) => {
                 const hasDiscountA = a.discountPrice && a.discountPrice > 0;
                 const hasDiscountB = b.discountPrice && b.discountPrice > 0;
-                
+
                 if (hasDiscountA && !hasDiscountB) return -1;
                 if (!hasDiscountA && hasDiscountB) return 1;
                 
