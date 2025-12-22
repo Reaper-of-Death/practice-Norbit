@@ -1,4 +1,3 @@
-// furniture-store-api.js
 class FurnitureStoreAPI {
     constructor(baseURL = 'http://localhost:3000/api') {
         this.baseURL = baseURL;
@@ -96,6 +95,52 @@ class FurnitureStoreAPI {
             success: true,
             data: furniture
         };
+    }
+
+    async getFurnitureDetails(id) {
+        try {
+            const furniture = await this.getFurnitureById(id);
+            
+            // Получаем дополнительные данные (тип, материалы)
+            const [types, materials] = await Promise.all([
+                this.getAllFurnitureTypes(),
+                this.getAllMaterials()
+            ]);
+            
+            return {
+                ...furniture.data,
+                type: types.data.find(t => t.Id === furniture.data.Id_Type),
+                materials: materials.data.filter(m => m.furniture_id === id)
+            };
+        } catch (error) {
+            console.error('Ошибка получения деталей мебели:', error);
+            throw error;
+        }
+    }
+
+    async getPopularFurniture(limit = 10) {
+        try {
+            const allFurniture = await this.getAllFurniture();
+            
+            // Сортируем по скидке или другому критерию
+            const sorted = allFurniture.data.sort((a, b) => {
+                // Приоритет товарам со скидкой
+                const discountA = a.Discount || 0;
+                const discountB = b.Discount || 0;
+                
+                if (discountB !== discountA) {
+                    return discountB - discountA;
+                }
+                
+                // Затем по цене
+                return a.Cost - b.Cost;
+            });
+            
+            return sorted.slice(0, limit);
+        } catch (error) {
+            console.error('Ошибка получения популярных товаров:', error);
+            throw error;
+        }
     }
 
     // ========== КЛИЕНТЫ ==========
