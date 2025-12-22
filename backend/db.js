@@ -87,13 +87,13 @@ class Database {
     const client = await this.pool.connect();
     try {
       await client.query('BEGIN');
-
+      
       const orderResult = await client.query(
         'INSERT INTO "Order" ("id_Client") VALUES ($1) RETURNING *',
         [clientId]
       );
       const order = orderResult.rows[0];
-
+      
       let totalCost = 0;
 
       for (const item of items) {
@@ -113,19 +113,19 @@ class Database {
         await client.query(
           `INSERT INTO "OrderItem" ("id_Order", "id_Furniture", "Count", "Price") 
            VALUES ($1, $2, $3, $4)`,
-          [order.Id, item.furnitureId, item.count, Math.round(price)]
+          [order.id, item.furnitureId, item.count, Math.round(price)]
         );
 
         totalCost += itemTotal;
       }
-
+      
       await client.query(
         'UPDATE "Order" SET "TotalCost" = $1 WHERE "id" = $2',
-        [totalCost, order.Id]
+        [totalCost, order.id]
       );
-
+      
       await client.query('COMMIT');
-
+      
       const completeOrder = await client.query(`
         SELECT 
           o.*,
@@ -145,7 +145,7 @@ class Database {
         JOIN "Furniture" f ON oi."id_Furniture" = f."id"
         WHERE o."id" = $1
         GROUP BY o."id", c."id"
-      `, [order.Id]);
+      `, [order.id]);
 
       return completeOrder.rows[0];
 

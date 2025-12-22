@@ -44,26 +44,6 @@ class FurnitureStoreAPI {
     }
 
     /**
-     * Поиск мебели по названию или описанию
-     * @param {string} query Строка поиска
-     * @returns {Promise<Array>} Результаты поиска
-     */
-    async searchFurniture(query) {
-        const allFurniture = await this.getAllFurniture();
-        
-        if (!query) return allFurniture;
-
-        const searchTerm = query.toLowerCase();
-        return {
-            success: true,
-            data: allFurniture.data.filter(item => 
-                item.Name.toLowerCase().includes(searchTerm) ||
-                item.Description?.toLowerCase().includes(searchTerm)
-            )
-        };
-    }
-
-    /**
      * Получить мебель по ID
      * @param {number} id ID мебели
      * @returns {Promise<Object>} Данные мебели
@@ -80,67 +60,6 @@ class FurnitureStoreAPI {
             success: true,
             data: furniture
         };
-    }
-
-    /**
-     * Получить мебель по типу
-     * @param {number} typeId ID типа мебели
-     * @returns {Promise<Array>} Мебель указанного типа
-     */
-    async getFurnitureByType(typeId) {
-        const allFurniture = await this.getAllFurniture();
-        const furniture = allFurniture.data.filter(item => item.Id_Type === typeId);
-        
-        return {
-            success: true,
-            data: furniture
-        };
-    }
-
-    async getFurnitureDetails(id) {
-        try {
-            const furniture = await this.getFurnitureById(id);
-            
-            // Получаем дополнительные данные (тип, материалы)
-            const [types, materials] = await Promise.all([
-                this.getAllFurnitureTypes(),
-                this.getAllMaterials()
-            ]);
-            
-            return {
-                ...furniture.data,
-                type: types.data.find(t => t.Id === furniture.data.Id_Type),
-                materials: materials.data.filter(m => m.furniture_id === id)
-            };
-        } catch (error) {
-            console.error('Ошибка получения деталей мебели:', error);
-            throw error;
-        }
-    }
-
-    async getPopularFurniture(limit = 10) {
-        try {
-            const allFurniture = await this.getAllFurniture();
-            
-            // Сортируем по скидке или другому критерию
-            const sorted = allFurniture.data.sort((a, b) => {
-                // Приоритет товарам со скидкой
-                const discountA = a.Discount || 0;
-                const discountB = b.Discount || 0;
-                
-                if (discountB !== discountA) {
-                    return discountB - discountA;
-                }
-                
-                // Затем по цене
-                return a.Cost - b.Cost;
-            });
-            
-            return sorted.slice(0, limit);
-        } catch (error) {
-            console.error('Ошибка получения популярных товаров:', error);
-            throw error;
-        }
     }
 
     // ========== КЛИЕНТЫ ==========
@@ -222,6 +141,14 @@ class FurnitureStoreAPI {
      * @returns {Promise<Object>} Созданный заказ
      */
     async createOrder(orderData) {
+        if (!orderData.clientId) {
+            throw new Error('clientId обязателен для заполнения');
+        }
+        
+        if (!orderData.items || !Array.isArray(orderData.items) || orderData.items.length === 0) {
+            throw new Error('items (массив) обязателен для заполнения');
+        }
+        
         return this.request('/orders', {
             method: 'POST',
             body: JSON.stringify(orderData)
@@ -244,10 +171,10 @@ class FurnitureStoreAPI {
      */
     async createOrderWithClient(orderInfo) {
         const { client, items } = orderInfo;
-        
+
         // Получаем или создаем клиента
         const clientResult = await this.getOrCreateClient(client);
-        const clientId = clientResult.data.Id;
+        const clientId = clientResult.data.id;
 
         // Создаем заказ
         const orderResult = await this.createOrder({
@@ -257,134 +184,12 @@ class FurnitureStoreAPI {
                 count: item.count
             }))
         });
-
         return {
             success: true,
             order: orderResult.data,
             client: clientResult.data,
             clientExisted: clientResult.existed
         };
-    }
-
-    // ========== МАТЕРИАЛЫ ==========
-
-    /**
-     * Получить все материалы
-     * @returns {Promise<Array>} Список материалов
-     */
-    async getAllMaterials() {
-        return this.request('/materials');
-    }
-
-    // ========== ТИПЫ МЕБЕЛИ ==========
-
-    /**
-     * Получить все типы мебели
-     * @returns {Promise<Array>} Список типов мебели
-     */
-    async getAllFurnitureTypes() {
-        return this.request('/furniture-types');
-    }
-
-    // ========== КОРЗИНА (локальное хранилище) ==========
-
-    /**
-     * Получить корзину из localStorage
-     * @returns {Array} Товары в корзине
-     */
-    getCart() {
-        const cart = localStorage.getItem('furniture_cart');
-        return cart ? JSON.parse(cart) : [];
-    }
-
-    /**
-     * Добавить товар в корзину
-     * @param {Object} item Данные товара
-     */
-    addToCart(item) {
-        const cart = this.getCart();
-        
-        // Проверяем, есть ли уже этот товар в корзине
-        const existingItemIndex = cart.findIndex(cartItem => 
-            cartItem.furnitureId === item.furnitureId
-        );
-
-        if (existingItemIndex >= 0) {
-            // Обновляем количество
-            cart[existingItemIndex].count += item.count;
-        } else {
-            // Добавляем новый товар
-            cart.push(item);
-        }
-
-        localStorage.setItem('furniture_cart', JSON.stringify(cart));
-        this.updateCartCount();
-    }
-
-    /**
-     * Удалить товар из корзины
-     * @param {number} furnitureId ID мебели
-     */
-    removeFromCart(furnitureId) {
-        const cart = this.getCart();
-        const filteredCart = cart.filter(item => item.furnitureId !== furnitureId);
-        localStorage.setItem('furniture_cart', JSON.stringify(filteredCart));
-        this.updateCartCount();
-    }
-
-    /**
-     * Очистить корзину
-     */
-    clearCart() {
-        localStorage.removeItem('furniture_cart');
-        this.updateCartCount();
-    }
-
-    /**
-     * Получить количество товаров в корзине
-     * @returns {number} Количество товаров
-     */
-    getCartCount() {
-        const cart = this.getCart();
-        return cart.reduce((total, item) => total + item.count, 0);
-    }
-
-    /**
-     * Обновить отображение количества товаров в корзине
-     */
-    updateCartCount() {
-        const cartCount = this.getCartCount();
-        const cartElements = document.querySelectorAll('.cart-count');
-        
-        cartElements.forEach(element => {
-            element.textContent = cartCount;
-            element.style.display = cartCount > 0 ? 'inline' : 'none';
-        });
-    }
-
-    /**
-     * Получить полную информацию о товарах в корзине
-     * @returns {Promise<Array>} Товары с полной информацией
-     */
-    async getCartWithDetails() {
-        const cart = this.getCart();
-        const furniture = await this.getAllFurniture();
-        
-        return cart.map(cartItem => {
-            const furnitureItem = furniture.data.find(f => f.Id === cartItem.furnitureId);
-            if (!furnitureItem) return null;
-            
-            const price = furnitureItem.Cost * (1 - furnitureItem.Discount / 100);
-            
-            return {
-                ...cartItem,
-                furniture: furnitureItem,
-                price: price,
-                total: price * cartItem.count,
-                price_rub: (price / 100).toFixed(2),
-                total_rub: ((price * cartItem.count) / 100).toFixed(2)
-            };
-        }).filter(item => item !== null);
     }
 
     /**
@@ -394,44 +199,16 @@ class FurnitureStoreAPI {
      */
     async checkoutCart(clientData) {
         const cart = this.getCart();
-        
-        if (cart.length === 0) {
-            throw new Error('Корзина пуста');
-        }
 
         const orderResult = await this.createOrderWithClient({
             client: clientData,
             items: cart
         });
 
-        // Очищаем корзину после успешного оформления
-        if (orderResult.success) {
-            this.clearCart();
-        }
-
         return orderResult;
     }
 
     // ========== УТИЛИТЫ ==========
-
-    /**
-     * Форматирование цены
-     * @param {number} price Цена в копейках
-     * @returns {string} Отформатированная цена
-     */
-    formatPrice(price) {
-        return (price / 100).toFixed(2) + ' ₽';
-    }
-
-    /**
-     * Форматирование даты
-     * @param {string} dateString Строка даты
-     * @returns {string} Отформатированная дата
-     */
-    formatDate(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('ru-RU');
-    }
 
     /**
      * Проверка состояния сервера

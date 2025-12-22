@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCart } from '@features/addToCart/cartContext/cartContext'
 import { Image } from '../../entities/product/ui/image';
 
@@ -19,6 +19,17 @@ export const Cart = () => {
     phone: ''
   });
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderResult, setOrderResult] = useState(null);
+  const [apiClient, setApiClient] = useState(null);
+
+  useEffect(() => {
+    if (window.FurnitureStoreAPI) {
+      setApiClient(window.FurnitureStoreAPI); // используем правильное имя
+    } else {
+      console.error('API client not found. Make sure api-client.js is loaded.');
+    }
+  }, []);
 
   const getOriginalTotal = () => {
     return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
@@ -122,16 +133,79 @@ export const Cart = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const validationErrors = validateForm();
     
-    if (Object.keys(validationErrors).length === 0) {
-      console.log('Заказ оформлен:', { formData, cartItems });
-      alert('Заказ успешно оформлен!');
-      clearCart();
-    } else {
+    // Проверяем наличие API клиента
+    if (!apiClient) { // используем правильное имя
+      alert('Ошибка: API клиент не загружен');
+      return;
+    }
+    
+    // Проверяем валидность формы
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      return;
+    }
+    
+    // Проверяем, есть ли товары в корзине
+    if (cartItems.length === 0) {
+      alert('Корзина пуста');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      // Преобразуем данные формы для API
+      const clientData = {
+        name: formData.fullName.trim(),
+        email: formData.email.trim(),
+        phone: '+' + formData.phone.replace(/\D/g, ''),
+        address: formData.address.trim()
+      };
+      
+      const items = cartItems.map(item => ({
+        furnitureId: item.id,
+        count: item.quantity
+      }));
+      
+      console.log('Отправка заказа:', { clientData, items });
+
+      const result = await apiClient.createOrderWithClient({
+        client: clientData,
+        items: items
+      });
+      console.log(result)
+      if (result.success) {
+        setOrderResult({
+          orderId: result.order.id,
+          client: result.client,
+          existed: result.clientExisted
+        });
+        
+        // Очищаем корзину
+        clearCart();
+        
+        // Сбрасываем форму
+        setFormData({
+          fullName: '',
+          address: '',
+          email: '',
+          phone: ''
+        });
+        
+        alert(`Заказ успешно оформлен! Номер заказа: #${result.order.id}`);
+      } else {
+        throw new Error('Не удалось создать заказ');
+      }
+      
+    } catch (error) {
+      console.error('Ошибка оформления заказа:', error);
+      alert(`Ошибка оформления заказа: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

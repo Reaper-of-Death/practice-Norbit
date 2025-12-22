@@ -86,9 +86,9 @@ app.post('/api/orders', async (req, res) => {
         message: 'clientId и items (массив) обязательны для заполнения'
       });
     }
-
+    
     const clientCheck = await db.query(
-      'SELECT * FROM "Client" WHERE "Id" = $1',
+      'SELECT * FROM "Client" WHERE "id" = $1',
       [clientId]
     );
 
